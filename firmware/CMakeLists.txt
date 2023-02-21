@@ -186,3 +186,43 @@ target_link_libraries(remapper_serial
     tinyusb_board
 )
 pico_add_extra_outputs(remapper_serial)
+
+add_executable(remapper_grin_noisier
+    src/main.cc
+    src/remapper.cc
+    src/remapper_grin_noisier.cc
+    src/crc.cc
+    src/descriptor_parser.cc
+    src/tinyusb_stuff.cc
+    src/our_descriptor.cc
+    src/globals.cc
+    src/config.cc
+    src/quirks.cc
+    src/interval_override.cc
+)
+
+target_compile_definitions(remapper_grin_noisier PUBLIC PICO_DEFAULT_UART_TX_PIN=16)
+target_compile_definitions(remapper_grin_noisier PUBLIC PICO_DEFAULT_UART_RX_PIN=17)
+target_compile_definitions(remapper_grin_noisier PUBLIC PIO_USB_DP_PIN=0)
+target_compile_definitions(remapper_grin_noisier PUBLIC SOLENOID_PIN=2)
+
+target_include_directories(remapper_grin_noisier PRIVATE
+    src
+    src/tusb_config_both
+    ${PICO_PIO_USB_PATH}
+)
+
+target_link_libraries(remapper_grin_noisier
+    pico_stdlib
+    pico_multicore
+    hardware_pio
+    hardware_dma
+    hardware_flash
+    tinyusb_device
+    tinyusb_host
+    tinyusb_board
+    tinyusb_pico_pio_usb
+)
+
+pico_set_binary_type(remapper_grin_noisier copy_to_ram)
+pico_add_extra_outputs(remapper_grin_noisier)
