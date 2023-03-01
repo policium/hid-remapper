@@ -8,11 +8,13 @@
 #ifndef SOLENOID_PIN
 #define SOLENOID_PIN               2
 #endif
-#define SOLENOID_STATE_ON          1
+#define SOLENOID_STATE_ON          0
+#define SOLENOID_STATE_OFF         1-SOLENOID_STATE_ON
 
 void extra_init() {
     gpio_init(SOLENOID_PIN);
     gpio_set_dir(SOLENOID_PIN, GPIO_OUT);
+    gpio_put(SOLENOID_PIN, SOLENOID_STATE_OFF);
 }
 
 void solenoid(bool push) {
@@ -28,7 +30,7 @@ void solenoid(bool push) {
         turn_solenoid_off_after = time_us_64() + 100000;
     } else if (!push && time_us_64() > turn_solenoid_off_after) {
         solenoid_state = false;
-        gpio_put(SOLENOID_PIN, 1-SOLENOID_STATE_ON);
+        gpio_put(SOLENOID_PIN, SOLENOID_STATE_OFF);
         turn_solenoid_off_for = time_us_64() + 10000;
     }
 }
